@@ -1,7 +1,9 @@
 package com.nigam.springbootexplorer.dto;
 
 
+import com.nigam.springbootexplorer.annotations.JobTitleValidation;
 import com.nigam.springbootexplorer.entity.Employee;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,9 +18,11 @@ public class EmployeeDTO {
     private Integer employeeId;
     private String firstName;
     private String lastName;
+    @Email
     private String email;
     private String phoneNumber;
     private LocalDate hireDate;
+    @JobTitleValidation
     private String jobTitle;
     private BigDecimal salary;
     private Integer departmentId;
