@@ -2,6 +2,10 @@ package com.nigam.springbootexplorer.services;
 
 import com.nigam.springbootexplorer.dto.EmployeeDTO;
 
+import java.util.List;
+
 public interface EmployeeService {
-    public EmployeeDTO findById(int id);
+    EmployeeDTO findById(int id);
+    List<EmployeeDTO> findAll();
+    EmployeeDTO createNewEmployee(EmployeeDTO employeeDTO);
 }
