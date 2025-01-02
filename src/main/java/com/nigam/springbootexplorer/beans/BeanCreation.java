@@ -16,8 +16,14 @@ public class BeanCreation  implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Apple Bean created");
-        System.out.println(apple1.hashCode());
-        System.out.println(apple2.hashCode());
+        if (showHashcode()) {
+            System.out.println("Apple Bean created");
+            System.out.println(apple1.hashCode());
+            System.out.println(apple2.hashCode());
+        }
+    }
+
+    private boolean showHashcode() {
+        return Boolean.parseBoolean(System.getProperty("bean.show.hashcode", "false"));
     }
 }
