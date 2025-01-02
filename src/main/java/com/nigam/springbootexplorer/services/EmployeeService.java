@@ -8,4 +8,5 @@ public interface EmployeeService {
     EmployeeDTO findById(int id);
     List<EmployeeDTO> findAll();
     EmployeeDTO createNewEmployee(EmployeeDTO employeeDTO);
+    EmployeeDTO updateExistingEmployee(EmployeeDTO employeeDTO);
 }
