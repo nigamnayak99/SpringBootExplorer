@@ -1,6 +1,8 @@
 package com.nigam.springbootexplorer.configurations;
 
 
+import com.nigam.springbootexplorer.filters.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,22 +19,28 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.sessionManagement(sessionConfigPolicy ->
                         sessionConfigPolicy.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeHttpRequests( auth -> auth
+                        .authorizeHttpRequests( auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated())
-                    .csrf(AbstractHttpConfigurer::disable);   /* Disable CSRF Config */
+                        .csrf(AbstractHttpConfigurer::disable)                   /* Disable CSRF Config */
+                        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);   /* Explicitly Adding JwtAuthFilter before UsernamePasswordAuthenticationFilter
+                                                                                                    * to make authenticated user available as Authentication before
+                                                                                                    *  UserNameAndPasswordAuthenticationFilter triggers. */
                      /* Disable Default Form Login */
 //                .formLogin(Customizer.withDefaults());
 
@@ -55,11 +63,6 @@ public class WebSecurityConfig {
 //
 //        return new InMemoryUserDetailsManager(inMemoryUser1, inMemoryAdminUser1);
 //    }
-
-    @Bean
-    PasswordEncoder encode() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 
 
     @Bean
