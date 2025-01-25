@@ -40,4 +40,9 @@ public class UserDetailsServiceImpl implements UserDetailService {
         return UserDTO.make(user);
     }
 
+    @Override
+    public User findByUserId(Long userId) {
+        return userRepository.findById(userId).orElseThrow( () -> new ResourceNotFoundException("User Could not be found with UserId : "+userId));
+    }
+
 }
