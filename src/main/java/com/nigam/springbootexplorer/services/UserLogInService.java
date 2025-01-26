@@ -1,8 +1,10 @@
 package com.nigam.springbootexplorer.services;
 
-import com.nigam.springbootexplorer.dto.LogInDTO;
-import com.nigam.springbootexplorer.dto.UserDTO;
+import com.nigam.springbootexplorer.dto.LogInRequestDTO;
+import com.nigam.springbootexplorer.dto.LogInResponseDTO;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface UserLogInService {
-    public UserDTO login(LogInDTO logInDTO);
+    LogInResponseDTO login(LogInRequestDTO logInDTO, HttpServletResponse response);
+    LogInResponseDTO refreshToken(String refreshToken);
 }
