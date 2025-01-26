@@ -30,9 +30,6 @@ public class UserDTO {
     @NotBlank(message = "Email can't be null")
     String email;
 
-    @NotBlank(message = "token can't be null")
-    String token;
-
 
     public static UserDTO make(User user) {
 
