@@ -30,15 +30,31 @@ public class JWTTokenHelper {
 
     private final MacAlgorithm SIGNATURE_ALGORITHM = Jwts.SIG.HS512;
 
+    private final String ACCESS = "access";
+    private final String REFRESH = "refresh";
+
     /**
-     * Calculates the expiration date for the token based on the current system time
-     * and the predefined expiration interval.
+     * Generates a token (access or refresh) with its expiration date.
      *
-     * @return the expiration date for the token
+     * @param tokenType the type of token to generate ("access" or "refresh")
+     * @return a map containing the token and its expiration date
+     * @throws IllegalArgumentException if the token type is invalid
      */
-    private Date getTokenExpirationDate() {
+    public Date generateTokenExpirationDate(String tokenType) {
         long currentMillis = Utility.getCurrentSystemTimeInMillisSeconds.get();
-        Instant expirationInstant = Instant.ofEpochMilli(currentMillis).plus(Long.parseLong(EXPIRES_IN), ChronoUnit.MILLIS);
+
+        // Determine expiration duration based on token type
+        long expiresIn;
+        if (ACCESS.equalsIgnoreCase(tokenType)) {
+            expiresIn = Long.parseLong(EXPIRES_IN);
+        } else if (REFRESH.equalsIgnoreCase(tokenType)) {
+            expiresIn = Long.parseLong(EXPIRES_IN) * 48 * 30 * 6; // Adjust multiplier for refresh token
+        } else {
+            throw new IllegalArgumentException("Invalid token type: " + tokenType);
+        }
+
+        // Calculate expiration date and return it.
+        Instant expirationInstant = Instant.ofEpochMilli(currentMillis).plus(expiresIn, ChronoUnit.MILLIS);
         return Date.from(expirationInstant);
     }
 
@@ -53,19 +69,28 @@ public class JWTTokenHelper {
     }
 
     /**
-     * Generates a JWT token for a given user. The token includes the user's ID, email,
+     * Generates a JWT access token for a given user. The token includes the user's ID, email,
      * roles, issued date, and expiration date, and is signed with a secure key.
      *
      * @param user the user for whom the token is generated
      * @return the generated JWT token as a String
      */
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
         return Jwts.builder()
                 .subject(String.valueOf(user.getId()))
                 .claim("email", user.getEmail())
                 .claim("roles", Set.of("ADMIN", "USER"))
                 .issuedAt(new Date())
-                .expiration(getTokenExpirationDate())
+                .expiration(generateTokenExpirationDate(ACCESS))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+
+    public String generateRefreshToken(User user) {
+        return Jwts.builder()
+                .subject(String.valueOf(user.getId()))
+                .expiration(generateTokenExpirationDate(REFRESH))
                 .signWith(getSigningKey())
                 .compact();
     }
