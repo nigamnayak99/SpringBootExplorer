@@ -87,6 +87,16 @@ public class JWTTokenHelper {
     }
 
 
+    /**
+     * Generates a refresh token for the given user.
+     *
+     * @param user the user for whom the refresh token is to be generated
+     * @return a JWT refresh token as a String
+     *
+     * The token includes the user's ID as the subject,
+     * an expiration date generated specifically for refresh tokens,
+     * and is signed using a secure signing key.
+     */
     public String generateRefreshToken(User user) {
         return Jwts.builder()
                 .subject(String.valueOf(user.getId()))
