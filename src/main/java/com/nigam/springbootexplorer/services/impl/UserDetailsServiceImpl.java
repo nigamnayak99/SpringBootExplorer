@@ -45,4 +45,14 @@ public class UserDetailsServiceImpl implements UserDetailService {
         return userRepository.findById(userId).orElseThrow( () -> new ResourceNotFoundException("User Could not be found with UserId : "+userId));
     }
 
+    @Override
+    public Optional<User> findByUserEmail(String userEmail) {
+        return userRepository.findByEmail(userEmail);
+    }
+
+    @Override
+    public User save(User newUser) {
+        return userRepository.save(newUser);
+    }
+
 }

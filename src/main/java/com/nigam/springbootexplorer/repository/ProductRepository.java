@@ -12,7 +12,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBy();
     List<Product> findByTitleContaining(String keyword);
     List<Product> findByQuantityGreaterThan(Integer Quantity);
-    List<Product> findPriceLessThanAndQuantityGreaterThan(BigDecimal price, Integer quantity);
+//    List<Product> findPriceLessThanAndQuantityGreaterThan(BigDecimal price, Integer quantity);
     List<Product> findAllByOrderByPriceAsc();
     List<Product> findAllByOrderByQuantityDesc();
     List<Product> findTop5ByOrderByPriceDesc();

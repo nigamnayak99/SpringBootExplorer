@@ -2,6 +2,7 @@ package com.nigam.springbootexplorer.configurations;
 
 
 import com.nigam.springbootexplorer.filters.JwtAuthFilter;
+import com.nigam.springbootexplorer.handlers.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,8 @@ public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
     /**
      * Configures the security filter chain for the application.
      *
@@ -54,7 +57,7 @@ public class WebSecurityConfig {
                  * - Require authentication for all other requests.
                  */
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**", "/home.html").permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -72,7 +75,12 @@ public class WebSecurityConfig {
                  * - Authenticated users are set in the SecurityContext.
                  * - UsernamePasswordAuthenticationFilter is only triggered if necessary.
                  */
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .oauth2Login(oauth2config -> oauth2config
+                        .failureUrl("/login?error=true")
+                        .successHandler(oAuth2SuccessHandler)
+                );
 
         /*
          * (Optional) Uncomment this line to enable the default form-based login mechanism.
